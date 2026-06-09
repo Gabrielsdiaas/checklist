@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checklist Dinâmico</title>
+    <title>Checklist Dinâmico Jurídico</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #ffffff;
             margin: 20px;
-            color: #0b4da1;
+            color: #0b4da1; /* Azul escuro do título e textos padrão */
         }
 
         h2 {
@@ -48,38 +48,42 @@
         .checklist-item {
             display: flex;
             align-items: center;
-            cursor: pointer;
             font-size: 22px;
             user-select: none;
         }
 
-        .checklist-item input {
-            position: absolute;
-            opacity: 0;
-            cursor: pointer;
-            height: 0;
-            width: 0;
-        }
-
+        /* O Quadrado do Checkbox (Borda rosa original) */
         .checkmark {
             height: 24px;
             width: 24px;
-            border: 2px solid #e95a8f;
+            border: 2px solid #e95a8f; 
             border-radius: 6px;
             margin-right: 15px;
             display: inline-block;
             position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        /* O Texto do Nome (Clicável para "Não Tem Direito") */
+        .text {
+            cursor: pointer;
             transition: all 0.2s ease;
         }
 
-        .checklist-item input:checked ~ .checkmark {
-            background-color: #e95a8f;
+        /* =======================================================
+           ESTADO: TEM DIREITO (Verde, texto normal) 
+           ======================================================= */
+        .checklist-item.tem-direito .checkmark {
+            background-color: #28a745; /* Verde */
+            border-color: #28a745;
         }
-
-        .checkmark:after {
+        /* Símbolo de "Visto" branco dentro do quadrado verde */
+        .checklist-item.tem-direito .checkmark:after {
             content: "";
             position: absolute;
-            display: none;
+            display: block;
             left: 8px;
             top: 3px;
             width: 5px;
@@ -89,13 +93,29 @@
             transform: rotate(45deg);
         }
 
-        .checklist-item input:checked ~ .checkmark:after {
-            display: block;
+        /* =======================================================
+           ESTADO: NÃO TEM DIREITO (Vermelho, texto riscado) 
+           ======================================================= */
+        .checklist-item.nao-tem-direito .checkmark {
+            background-color: #dc3545; /* Vermelho */
+            border-color: #dc3545;
         }
-
-        .checklist-item input:checked ~ .text {
+        /* Símbolo de "X" branco dentro do quadrado vermelho */
+        .checklist-item.nao-tem-direito .checkmark:after {
+            content: "✕";
+            position: absolute;
+            display: block;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            left: 5px;
+            top: -1px;
+        }
+        /* Riscar o texto e deixar mais claro */
+        .checklist-item.nao-tem-direito .text {
             text-decoration: line-through;
-            opacity: 0.6;
+            color: #721c24;
+            opacity: 0.5;
         }
 
         /* Botão para limpar o checklist */
@@ -120,119 +140,145 @@
 
     <h2>Checklist</h2>
 
-    <!-- Campo identificador para o atendente mudar de cliente sem misturar dados -->
     <div class="id-container">
         <label for="cliente-id">Identificador do Cliente (Nome ou Chamado):</label>
         <input type="text" id="cliente-id" placeholder="Digite para carregar/salvar..." value="Geral">
     </div>
 
     <div class="checklist-container">
-        <label class="checklist-item">
-            <input type="checkbox" id="item-aposentadoria">
-            <span class="checkmark"></span>
-            <span class="text">Aposentadoria</span>
-        </label>
+        <div class="checklist-item" id="item-aposentadoria">
+            <span class="checkmark" onclick="alternarDireito('item-aposentadoria')"></span>
+            <span class="text" onclick="alternarNaoDireito('item-aposentadoria')">Aposentadoria</span>
+        </div>
 
-        <label class="checklist-item">
-            <input type="checkbox" id="item-aposentadoria-pcd">
-            <span class="checkmark"></span>
-            <span class="text">Aposentadoria PCD</span>
-        </label>
+        <div class="checklist-item" id="item-aposentadoria-pcd">
+            <span class="checkmark" onclick="alternarDireito('item-aposentadoria-pcd')"></span>
+            <span class="text" onclick="alternarNaoDireito('item-aposentadoria-pcd')">Aposentadoria PCD</span>
+        </div>
 
-        <label class="checklist-item">
-            <input type="checkbox" id="item-aposentadoria-especial">
-            <span class="checkmark"></span>
-            <span class="text">Aposentadoria Especial</span>
-        </label>
+        <div class="checklist-item" id="item-aposentadoria-especial">
+            <span class="checkmark" onclick="alternarDireito('item-aposentadoria-especial')"></span>
+            <span class="text" onclick="alternarNaoDireito('item-aposentadoria-especial')">Aposentadoria Especial</span>
+        </div>
       
-        <label class="checklist-item">
-            <input type="checkbox" id="item-auxilio">
-            <span class="checkmark"></span>
-            <span class="text">Auxílio Acidente</span>
-        </label>
+        <div class="checklist-item" id="item-auxilio">
+            <span class="checkmark" onclick="alternarDireito('item-auxilio')"></span>
+            <span class="text" onclick="alternarNaoDireito('item-auxilio')">Auxílio Acidente</span>
+        </div>
 
-        <label class="checklist-item">
-            <input type="checkbox" id="item-piso">
-            <span class="checkmark"></span>
-            <span class="text">Piso</span>
-        </label>
+        <div class="checklist-item" id="item-piso">
+            <span class="checkmark" onclick="alternarDireito('item-piso')"></span>
+            <span class="text" onclick="alternarNaoDireito('item-piso')">Piso</span>
+        </div>
 
-        <label class="checklist-item">
-            <input type="checkbox" id="item-hora">
-            <span class="checkmark"></span>
-            <span class="text">Hora Atividade</span>
-        </label>
+        <div class="checklist-item" id="item-hora">
+            <span class="checkmark" onclick="alternarDireito('item-hora')"></span>
+            <span class="text" onclick="alternarNaoDireito('item-hora')">Hora Atividade</span>
+        </div>
 
-        <label class="checklist-item">
-            <input type="checkbox" id="item-recreio">
-            <span class="checkmark"></span>
-            <span class="text">Recreio</span>
-        </label>
+        <div class="checklist-item" id="item-recreio">
+            <span class="checkmark" onclick="alternarDireito('item-recreio')"></span>
+            <span class="text" onclick="alternarNaoDireito('item-recreio')">Recreio</span>
+        </div>
 
-        <label class="checklist-item">
-            <input type="checkbox" id="item-fgts">
-            <span class="checkmark"></span>
-            <span class="text">FGTS</span>
-        </label>
+        <div class="checklist-item" id="item-fgts">
+            <span class="checkmark" onclick="alternarDireito('item-fgts')"></span>
+            <span class="text" onclick="alternarNaoDireito('item-fgts')">FGTS</span>
+        </div>
 
-        <label class="checklist-item">
-            <input type="checkbox" id="item-indenizacao">
-            <span class="checkmark"></span>
-            <span class="text">Indenização</span>
-        </label>
+        <div class="checklist-item" id="item-indenizacao">
+            <span class="checkmark" onclick="alternarDireito('item-indenizacao')"></span>
+            <span class="text" onclick="alternarNaoDireito('item-indenizacao')">Indenização</span>
+        </div>
 
-        <label class="checklist-item">
-            <input type="checkbox" id="item-isencao">
-            <span class="checkmark"></span>
-            <span class="text">Isenção</span>
-        </label>
+        <div class="checklist-item" id="item-isencao">
+            <span class="checkmark" onclick="alternarDireito('item-isencao')"></span>
+            <span class="text" onclick="alternarNaoDireito('item-isencao')">Isenção</span>
+        </div>
     </div>
 
     <button class="btn-limpar" onclick="limparChecklist()">Limpar Este Checklist</button>
 
     <script>
         const inputCliente = document.getElementById('cliente-id');
-        const checkboxes = document.querySelectorAll('.checklist-item input');
+        const items = document.querySelectorAll('.checklist-item');
 
-        // Tenta pegar o ticketId da URL se o Digisac enviar no primeiro carregamento
+        // Pega parâmetros da URL do Digisac
         const urlParams = new URLSearchParams(window.location.search);
         const urlChatId = urlParams.get('chatId');
         if (urlChatId) {
             inputCliente.value = urlChatId;
         }
 
-        // Função principal para carregar os dados baseados no cliente digitado
+        // Função executada ao clicar no QUADRADO (Tem Direito)
+        // Se clicar de novo, volta para o estado inicial (limpo)
+        function alternarDireito(idItem) {
+            const el = document.getElementById(idItem);
+            if (el.classList.contains('tem-direito')) {
+                el.classList.remove('tem-direito');
+                salvarEstado(idItem, 'neutro');
+            } else {
+                el.classList.remove('nao-tem-direito');
+                el.classList.add('tem-direito');
+                salvarEstado(idItem, 'direito');
+            }
+        }
+
+        // Função executada ao clicar no TEXTO/NOME (Não Tem Direito)
+        // Se clicar de novo, volta para o estado inicial (limpo)
+        function alternarNaoDireito(idItem) {
+            const el = document.getElementById(idItem);
+            if (el.classList.contains('nao-tem-direito')) {
+                el.classList.remove('nao-tem-direito');
+                salvarEstado(idItem, 'neutro');
+            } else {
+                el.classList.remove('tem-direito');
+                el.classList.add('nao-tem-direito');
+                salvarEstado(idItem, 'vetado');
+            }
+        }
+
+        // Salva a decisão na memória do navegador vinculada ao cliente atual
+        function salvarEstado(idItem, status) {
+            const clienteAtual = inputCliente.value.trim() || 'Geral';
+            const storageKey = `${clienteAtual}-${idItem}`;
+            if (status === 'neutro') {
+                localStorage.removeItem(storageKey);
+            } else {
+                localStorage.setItem(storageKey, status);
+            }
+        }
+
+        // Carrega as marcações corretas com base no nome do cliente atual
         function carregarChecklist() {
             const clienteAtual = inputCliente.value.trim() || 'Geral';
-            checkboxes.forEach(checkbox => {
-                const storageKey = `${clienteAtual}-${checkbox.id}`;
-                checkbox.checked = localStorage.getItem(storageKey) === 'true';
+            items.forEach(item => {
+                const storageKey = `${clienteAtual}-${item.id}`;
+                const statusSalvo = localStorage.getItem(storageKey);
+
+                item.classList.remove('tem-direito', 'nao-tem-direito');
+                if (statusSalvo === 'direito') {
+                    item.classList.add('tem-direito');
+                } else if (statusSalvo === 'vetado') {
+                    item.classList.add('nao-tem-direito');
+                }
             });
         }
 
-        // Salva os dados sempre que clicar em uma caixinha
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', () => {
-                const clienteAtual = inputCliente.value.trim() || 'Geral';
-                const storageKey = `${clienteAtual}-${checkbox.id}`;
-                localStorage.setItem(storageKey, checkbox.checked);
-            });
-        });
-
-        // Recarrega a lista se o atendente mudar o nome do cliente no campo
+        // Monitora se o atendente alterar manualmente o identificador do cliente
         inputCliente.addEventListener('input', carregarChecklist);
 
-        // Função do botão limpar
+        // Limpa todas as seleções do cliente atual
         function limparChecklist() {
             const clienteAtual = inputCliente.value.trim() || 'Geral';
-            checkboxes.forEach(checkbox => {
-                const storageKey = `${clienteAtual}-${checkbox.id}`;
-                checkbox.checked = false;
+            items.forEach(item => {
+                const storageKey = `${clienteAtual}-${item.id}`;
+                item.classList.remove('tem-direito', 'nao-tem-direito');
                 localStorage.removeItem(storageKey);
             });
         }
 
-        // Inicializa o carregamento na abertura da página
+        // Inicia carregando as informações ao abrir a aba
         carregarChecklist();
     </script>
 
