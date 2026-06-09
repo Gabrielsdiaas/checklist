@@ -52,55 +52,61 @@
         }
 
         .checkmark {
-            height: 24px;
-            width: 24px;
-            border: 2px solid #e95a8f; 
+            height: 28px;
+            width: 28px;
+            min-width: 28px;
+            border: 2px solid #e95a8f;
             border-radius: 6px;
             margin-right: 15px;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             position: relative;
             cursor: pointer;
             transition: all 0.2s ease;
             flex-shrink: 0;
+            box-sizing: border-box;
         }
 
         .text {
             cursor: pointer;
             transition: all 0.2s ease;
+            line-height: 1.3;
         }
 
-        /* ESTADO: TEM DIREITO (Verde, texto normal) */
+        /* ESTADO: TEM DIREITO — checkbox verde com check */
         .checklist-item.tem-direito .checkmark {
             background-color: #28a745;
             border-color: #28a745;
         }
-        .checklist-item.tem-direito .checkmark:after {
+        .checklist-item.tem-direito .checkmark::after {
             content: "";
             position: absolute;
             display: block;
-            left: 8px;
-            top: 3px;
-            width: 5px;
-            height: 12px;
+            left: 9px;
+            top: 4px;
+            width: 6px;
+            height: 13px;
             border: solid white;
             border-width: 0 3px 3px 0;
             transform: rotate(45deg);
         }
 
-        /* ESTADO: NÃO TEM DIREITO (Vermelho, texto riscado) */
+        /* ESTADO: NÃO TEM DIREITO — checkbox vermelho com X, texto riscado */
         .checklist-item.nao-tem-direito .checkmark {
             background-color: #dc3545;
             border-color: #dc3545;
-        }
-        .checklist-item.nao-tem-direito .checkmark:after {
-            content: "✕";
-            position: absolute;
-            display: block;
             color: white;
             font-size: 16px;
             font-weight: bold;
-            left: 5px;
-            top: -1px;
+        }
+        .checklist-item.nao-tem-direito .checkmark::after {
+            content: "✕";
+            position: absolute;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            line-height: 1;
         }
         .checklist-item.nao-tem-direito .text {
             text-decoration: line-through;
@@ -136,53 +142,44 @@
 
     <div class="checklist-container">
         <div class="checklist-item" id="item-aposentadoria">
-            <span class="checkmark" onclick="alternarDireito('item-aposentadoria')"></span>
-            <span class="text" onclick="alternarNaoDireito('item-aposentadoria')">Aposentadoria</span>
+            <span class="checkmark"></span>
+            <span class="text">Aposentadoria</span>
         </div>
-
         <div class="checklist-item" id="item-aposentadoria-pcd">
-            <span class="checkmark" onclick="alternarDireito('item-aposentadoria-pcd')"></span>
-            <span class="text" onclick="alternarNaoDireito('item-aposentadoria-pcd')">Aposentadoria PCD</span>
+            <span class="checkmark"></span>
+            <span class="text">Aposentadoria PCD</span>
         </div>
-
         <div class="checklist-item" id="item-aposentadoria-especial">
-            <span class="checkmark" onclick="alternarDireito('item-aposentadoria-especial')"></span>
-            <span class="text" onclick="alternarNaoDireito('item-aposentadoria-especial')">Aposentadoria Especial</span>
+            <span class="checkmark"></span>
+            <span class="text">Aposentadoria Especial</span>
         </div>
-      
         <div class="checklist-item" id="item-auxilio">
-            <span class="checkmark" onclick="alternarDireito('item-auxilio')"></span>
-            <span class="text" onclick="alternarNaoDireito('item-auxilio')">Auxílio Acidente</span>
+            <span class="checkmark"></span>
+            <span class="text">Auxílio Acidente</span>
         </div>
-
         <div class="checklist-item" id="item-piso">
-            <span class="checkmark" onclick="alternarDireito('item-piso')"></span>
-            <span class="text" onclick="alternarNaoDireito('item-piso')">Piso</span>
+            <span class="checkmark"></span>
+            <span class="text">Piso</span>
         </div>
-
         <div class="checklist-item" id="item-hora">
-            <span class="checkmark" onclick="alternarDireito('item-hora')"></span>
-            <span class="text" onclick="alternarNaoDireito('item-hora')">Hora Atividade</span>
+            <span class="checkmark"></span>
+            <span class="text">Hora Atividade</span>
         </div>
-
         <div class="checklist-item" id="item-recreio">
-            <span class="checkmark" onclick="alternarDireito('item-recreio')"></span>
-            <span class="text" onclick="alternarNaoDireito('item-recreio')">Recreio</span>
+            <span class="checkmark"></span>
+            <span class="text">Recreio</span>
         </div>
-
         <div class="checklist-item" id="item-fgts">
-            <span class="checkmark" onclick="alternarDireito('item-fgts')"></span>
-            <span class="text" onclick="alternarNaoDireito('item-fgts')">FGTS</span>
+            <span class="checkmark"></span>
+            <span class="text">FGTS</span>
         </div>
-
         <div class="checklist-item" id="item-indenizacao">
-            <span class="checkmark" onclick="alternarDireito('item-indenizacao')"></span>
-            <span class="text" onclick="alternarNaoDireito('item-indenizacao')">Indenização</span>
+            <span class="checkmark"></span>
+            <span class="text">Indenização</span>
         </div>
-
         <div class="checklist-item" id="item-isencao">
-            <span class="checkmark" onclick="alternarDireito('item-isencao')"></span>
-            <span class="text" onclick="alternarNaoDireito('item-isencao')">Isenção</span>
+            <span class="checkmark"></span>
+            <span class="text">Isenção</span>
         </div>
     </div>
 
@@ -192,35 +189,47 @@
         const inputCliente = document.getElementById('cliente-id');
         const items = document.querySelectorAll('.checklist-item');
 
+        // ─── Captura chatId da URL (Digisac) ───────────────────────────
         function obterChatId() {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get('chatId') || 'Geral';
         }
 
-        function alternarDireito(idItem) {
-            const el = document.getElementById(idItem);
-            if (el.classList.contains('tem-direito')) {
-                el.classList.remove('tem-direito');
-                salvarEstado(idItem, 'neutro');
-            } else {
-                el.classList.remove('nao-tem-direito');
-                el.classList.add('tem-direito');
-                salvarEstado(idItem, 'direito');
-            }
-        }
+        // ─── Vincula eventos via JS (evita conflito de propagação) ─────
+        items.forEach(item => {
+            const checkmark = item.querySelector('.checkmark');
+            const text      = item.querySelector('.text');
 
-        function alternarNaoDireito(idItem) {
-            const el = document.getElementById(idItem);
-            if (el.classList.contains('nao-tem-direito')) {
-                el.classList.remove('nao-tem-direito');
-                salvarEstado(idItem, 'neutro');
-            } else {
-                el.classList.remove('tem-direito');
-                el.classList.add('nao-tem-direito');
-                salvarEstado(idItem, 'vetado');
-            }
-        }
+            // Clique no QUADRADO → TEM DIREITO (verde)
+            checkmark.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const id = item.id;
+                if (item.classList.contains('tem-direito')) {
+                    item.classList.remove('tem-direito');
+                    salvarEstado(id, 'neutro');
+                } else {
+                    item.classList.remove('nao-tem-direito');
+                    item.classList.add('tem-direito');
+                    salvarEstado(id, 'direito');
+                }
+            });
 
+            // Clique no TEXTO → NÃO TEM DIREITO (vermelho + riscado)
+            text.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const id = item.id;
+                if (item.classList.contains('nao-tem-direito')) {
+                    item.classList.remove('nao-tem-direito');
+                    salvarEstado(id, 'neutro');
+                } else {
+                    item.classList.remove('tem-direito');
+                    item.classList.add('nao-tem-direito');
+                    salvarEstado(id, 'vetado');
+                }
+            });
+        });
+
+        // ─── LocalStorage ───────────────────────────────────────────────
         function salvarEstado(idItem, status) {
             const clienteAtual = inputCliente.value.trim() || 'Geral';
             const storageKey = `${clienteAtual}-${idItem}`;
@@ -236,7 +245,6 @@
             items.forEach(item => {
                 const storageKey = `${clienteAtual}-${item.id}`;
                 const statusSalvo = localStorage.getItem(storageKey);
-
                 item.classList.remove('tem-direito', 'nao-tem-direito');
                 if (statusSalvo === 'direito') {
                     item.classList.add('tem-direito');
@@ -245,8 +253,6 @@
                 }
             });
         }
-
-        inputCliente.addEventListener('input', carregarChecklist);
 
         function limparChecklist() {
             const clienteAtual = inputCliente.value.trim() || 'Geral';
@@ -257,7 +263,9 @@
             });
         }
 
-        // Garante a inicialização correta
+        inputCliente.addEventListener('input', carregarChecklist);
+
+        // ─── Inicialização ──────────────────────────────────────────────
         inputCliente.value = obterChatId();
         carregarChecklist();
     </script>
