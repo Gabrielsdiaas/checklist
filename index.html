@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist Dinâmico</title>
+    <style>
+        /* Estilização para ficar igual à sua imagem */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff;
+            margin: 20px;
+            color: #0b4da1; /* Azul escuro do título e textos */
+        }
+
+        h2 {
+            font-size: 32px;
+            font-weight: normal;
+            margin-bottom: 25px;
+            padding-left: 10px;
+        }
+
+        .checklist-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-size: 22px;
+            user-select: none;
+        }
+
+        /* Esconde o checkbox padrão do navegador */
+        .checklist-item input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        /* Cria o checkbox personalizado (Borda rosa) */
+        .checkmark {
+            height: 24px;
+            width: 24px;
+            border: 2px solid #e95a8f; /* Rosa da sua imagem */
+            border-radius: 6px;
+            margin-right: 15px;
+            display: inline-block;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        /* Quando estiver marcado: muda o fundo para rosa */
+        .checklist-item input:checked ~ .checkmark {
+            background-color: #e95a8f;
+        }
+
+        /* O check/visto branco dentro do quadrado rosa */
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+            left: 8px;
+            top: 3px;
+            width: 5px;
+            height: 12px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            transform: rotate(45deg);
+        }
+
+        /* Mostra o visto quando marcado */
+        .checklist-item input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        /* Efeito opcional: riscar o texto quando marcado (se não quiser, delete a linha abaixo) */
+        .checklist-item input:checked ~ .text {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Checklist</h2>
+
+    <div class="checklist-container">
+        <label class="checklist-item">
+            <input type="checkbox" id="item-aposentadoria">
+            <span class="checkmark"></span>
+            <span class="text">Aposentadoria</span>
+        </label>
+
+  <div class="checklist-container">
+        <label class="checklist-item">
+            <input type="checkbox" id="item-aposentadoria">
+            <span class="checkmark"></span>
+            <span class="text">Aposentadoria PCD</span>
+        </label>
+      
+        <label class="checklist-item">
+            <input type="checkbox" id="item-auxilio">
+            <span class="checkmark"></span>
+            <span class="text">Auxílio Acidente</span>
+        </label>
+
+        <label class="checklist-item">
+            <input type="checkbox" id="item-piso">
+            <span class="checkmark"></span>
+            <span class="text">Piso</span>
+        </label>
+
+        <label class="checklist-item">
+            <input type="checkbox" id="item-hora">
+            <span class="checkmark"></span>
+            <span class="text">Hora Atividade</span>
+        </label>
+
+        <label class="checklist-item">
+            <input type="checkbox" id="item-recreio">
+            <span class="checkmark"></span>
+            <span class="text">Recreio</span>
+        </label>
+
+        <label class="checklist-item">
+            <input type="checkbox" id="item-fgts">
+            <span class="checkmark"></span>
+            <span class="text">FGTS</span>
+        </label>
+
+        <label class="checklist-item">
+            <input type="checkbox" id="item-indenizacao">
+            <span class="checkmark"></span>
+            <span class="text">Indenização</span>
+        </label>
+
+        <label class="checklist-item">
+            <input type="checkbox" id="item-isencao">
+            <span class="checkmark"></span>
+            <span class="text">Isenção</span>
+        </label>
+    </div>
+
+    <script>
+        // Lógica para salvar e carregar o status dos checkboxes
+        const checkboxes = document.querySelectorAll('.checklist-item input');
+
+        // Carrega o que já estava marcado ao abrir a página
+        checkboxes.forEach(checkbox => {
+            const checked = localStorage.getItem(checkbox.id) === 'true';
+            checkbox.checked = checked;
+
+            // Escuta os cliques para salvar o novo estado
+            checkbox.addEventListener('change', () => {
+                localStorage.setItem(checkbox.id, checkbox.checked);
+            });
+        });
+    </script>
+
+</body>
+</html>
