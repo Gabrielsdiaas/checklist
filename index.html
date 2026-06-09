@@ -5,19 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checklist Dinâmico</title>
     <style>
-        /* Estilização para ficar igual à sua imagem */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #ffffff;
             margin: 20px;
-            color: #0b4da1; /* Azul escuro do título e textos */
+            color: #0b4da1;
         }
 
         h2 {
             font-size: 32px;
             font-weight: normal;
+            margin-bottom: 15px;
+            padding-left: 10px;
+        }
+
+        /* Campo para identificar o cliente atual */
+        .id-container {
             margin-bottom: 25px;
             padding-left: 10px;
+        }
+        .id-container label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .id-container input {
+            width: 90%;
+            padding: 8px;
+            font-size: 16px;
+            border: 2px solid #0b4da1;
+            border-radius: 6px;
+            color: #0b4da1;
         }
 
         .checklist-container {
@@ -34,7 +53,6 @@
             user-select: none;
         }
 
-        /* Esconde o checkbox padrão do navegador */
         .checklist-item input {
             position: absolute;
             opacity: 0;
@@ -43,11 +61,10 @@
             width: 0;
         }
 
-        /* Cria o checkbox personalizado (Borda rosa) */
         .checkmark {
             height: 24px;
             width: 24px;
-            border: 2px solid #e95a8f; /* Rosa da sua imagem */
+            border: 2px solid #e95a8f;
             border-radius: 6px;
             margin-right: 15px;
             display: inline-block;
@@ -55,12 +72,10 @@
             transition: all 0.2s ease;
         }
 
-        /* Quando estiver marcado: muda o fundo para rosa */
         .checklist-item input:checked ~ .checkmark {
             background-color: #e95a8f;
         }
 
-        /* O check/visto branco dentro do quadrado rosa */
         .checkmark:after {
             content: "";
             position: absolute;
@@ -74,21 +89,42 @@
             transform: rotate(45deg);
         }
 
-        /* Mostra o visto quando marcado */
         .checklist-item input:checked ~ .checkmark:after {
             display: block;
         }
 
-        /* Efeito: riscar o texto quando marcado */
         .checklist-item input:checked ~ .text {
             text-decoration: line-through;
             opacity: 0.6;
+        }
+
+        /* Botão para limpar o checklist */
+        .btn-limpar {
+            margin-top: 30px;
+            background-color: #e95a8f;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 94%;
+            transition: background 0.2s;
+        }
+        .btn-limpar:hover {
+            background-color: #c84373;
         }
     </style>
 </head>
 <body>
 
     <h2>Checklist</h2>
+
+    <!-- Campo identificador para o atendente mudar de cliente sem misturar dados -->
+    <div class="id-container">
+        <label for="cliente-id">Identificador do Cliente (Nome ou Chamado):</label>
+        <input type="text" id="cliente-id" placeholder="Digite para carregar/salvar..." value="Geral">
+    </div>
 
     <div class="checklist-container">
         <label class="checklist-item">
@@ -152,25 +188,52 @@
         </label>
     </div>
 
-    <script>
-        // 1. Captura o ticketId enviado pelo Digisac através da URL (?chatId=...)
-        const urlParams = new URLSearchParams(window.location.search);
-        const chatId = urlParams.get('chatId') || 'global';
+    <button class="btn-limpar" onclick="limparChecklist()">Limpar Este Checklist</button>
 
+    <script>
+        const inputCliente = document.getElementById('cliente-id');
         const checkboxes = document.querySelectorAll('.checklist-item input');
 
-        // 2. Percorre as caixinhas para carregar o histórico específico deste ticket
-        checkboxes.forEach(checkbox => {
-            // Cria uma chave única combinando o ID do chamado com o ID da caixinha
-            const storageKey = `${chatId}-${checkbox.id}`;
-            const checked = localStorage.getItem(storageKey) === 'true';
-            checkbox.checked = checked;
+        // Tenta pegar o ticketId da URL se o Digisac enviar no primeiro carregamento
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlChatId = urlParams.get('chatId');
+        if (urlChatId) {
+            inputCliente.value = urlChatId;
+        }
 
-            // 3. Escuta as alterações e salva no histórico deste chamado chamado individual
+        // Função principal para carregar os dados baseados no cliente digitado
+        function carregarChecklist() {
+            const clienteAtual = inputCliente.value.trim() || 'Geral';
+            checkboxes.forEach(checkbox => {
+                const storageKey = `${clienteAtual}-${checkbox.id}`;
+                checkbox.checked = localStorage.getItem(storageKey) === 'true';
+            });
+        }
+
+        // Salva os dados sempre que clicar em uma caixinha
+        checkboxes.forEach(checkbox => {
             checkbox.addEventListener('change', () => {
+                const clienteAtual = inputCliente.value.trim() || 'Geral';
+                const storageKey = `${clienteAtual}-${checkbox.id}`;
                 localStorage.setItem(storageKey, checkbox.checked);
             });
         });
+
+        // Recarrega a lista se o atendente mudar o nome do cliente no campo
+        inputCliente.addEventListener('input', carregarChecklist);
+
+        // Função do botão limpar
+        function limparChecklist() {
+            const clienteAtual = inputCliente.value.trim() || 'Geral';
+            checkboxes.forEach(checkbox => {
+                const storageKey = `${clienteAtual}-${checkbox.id}`;
+                checkbox.checked = false;
+                localStorage.removeItem(storageKey);
+            });
+        }
+
+        // Inicializa o carregamento na abertura da página
+        carregarChecklist();
     </script>
 
 </body>
