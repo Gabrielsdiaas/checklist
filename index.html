@@ -79,7 +79,7 @@
             display: block;
         }
 
-        /* Efeito opcional: riscar o texto quando marcado (se não quiser, delete a linha abaixo) */
+        /* Efeito: riscar o texto quando marcado */
         .checklist-item input:checked ~ .text {
             text-decoration: line-through;
             opacity: 0.6;
@@ -97,11 +97,16 @@
             <span class="text">Aposentadoria</span>
         </label>
 
-  <div class="checklist-container">
         <label class="checklist-item">
-            <input type="checkbox" id="item-aposentadoria">
+            <input type="checkbox" id="item-aposentadoria-pcd">
             <span class="checkmark"></span>
             <span class="text">Aposentadoria PCD</span>
+        </label>
+
+        <label class="checklist-item">
+            <input type="checkbox" id="item-aposentadoria-especial">
+            <span class="checkmark"></span>
+            <span class="text">Aposentadoria Especial</span>
         </label>
       
         <label class="checklist-item">
@@ -148,17 +153,22 @@
     </div>
 
     <script>
-        // Lógica para salvar e carregar o status dos checkboxes
+        // 1. Captura o ticketId enviado pelo Digisac através da URL (?chatId=...)
+        const urlParams = new URLSearchParams(window.location.search);
+        const chatId = urlParams.get('chatId') || 'global';
+
         const checkboxes = document.querySelectorAll('.checklist-item input');
 
-        // Carrega o que já estava marcado ao abrir a página
+        // 2. Percorre as caixinhas para carregar o histórico específico deste ticket
         checkboxes.forEach(checkbox => {
-            const checked = localStorage.getItem(checkbox.id) === 'true';
+            // Cria uma chave única combinando o ID do chamado com o ID da caixinha
+            const storageKey = `${chatId}-${checkbox.id}`;
+            const checked = localStorage.getItem(storageKey) === 'true';
             checkbox.checked = checked;
 
-            // Escuta os cliques para salvar o novo estado
+            // 3. Escuta as alterações e salva no histórico deste chamado chamado individual
             checkbox.addEventListener('change', () => {
-                localStorage.setItem(checkbox.id, checkbox.checked);
+                localStorage.setItem(storageKey, checkbox.checked);
             });
         });
     </script>
