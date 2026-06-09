@@ -9,7 +9,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #ffffff;
             margin: 20px;
-            color: #0b4da1; /* Azul escuro do título e textos padrão */
+            color: #0b4da1;
         }
 
         h2 {
@@ -19,7 +19,6 @@
             padding-left: 10px;
         }
 
-        /* Campo para identificar o cliente atual */
         .id-container {
             margin-bottom: 25px;
             padding-left: 10px;
@@ -52,7 +51,6 @@
             user-select: none;
         }
 
-        /* O Quadrado do Checkbox (Borda rosa original) */
         .checkmark {
             height: 24px;
             width: 24px;
@@ -66,20 +64,16 @@
             flex-shrink: 0;
         }
 
-        /* O Texto do Nome (Clicável para "Não Tem Direito") */
         .text {
             cursor: pointer;
             transition: all 0.2s ease;
         }
 
-        /* =======================================================
-           ESTADO: TEM DIREITO (Verde, texto normal) 
-           ======================================================= */
+        /* ESTADO: TEM DIREITO (Verde, texto normal) */
         .checklist-item.tem-direito .checkmark {
-            background-color: #28a745; /* Verde */
+            background-color: #28a745;
             border-color: #28a745;
         }
-        /* Símbolo de "Visto" branco dentro do quadrado verde */
         .checklist-item.tem-direito .checkmark:after {
             content: "";
             position: absolute;
@@ -93,14 +87,11 @@
             transform: rotate(45deg);
         }
 
-        /* =======================================================
-           ESTADO: NÃO TEM DIREITO (Vermelho, texto riscado) 
-           ======================================================= */
+        /* ESTADO: NÃO TEM DIREITO (Vermelho, texto riscado) */
         .checklist-item.nao-tem-direito .checkmark {
-            background-color: #dc3545; /* Vermelho */
+            background-color: #dc3545;
             border-color: #dc3545;
         }
-        /* Símbolo de "X" branco dentro do quadrado vermelho */
         .checklist-item.nao-tem-direito .checkmark:after {
             content: "✕";
             position: absolute;
@@ -111,14 +102,12 @@
             left: 5px;
             top: -1px;
         }
-        /* Riscar o texto e deixar mais claro */
         .checklist-item.nao-tem-direito .text {
             text-decoration: line-through;
             color: #721c24;
             opacity: 0.5;
         }
 
-        /* Botão para limpar o checklist */
         .btn-limpar {
             margin-top: 30px;
             background-color: #e95a8f;
@@ -203,15 +192,11 @@
         const inputCliente = document.getElementById('cliente-id');
         const items = document.querySelectorAll('.checklist-item');
 
-        // Pega parâmetros da URL do Digisac
-        const urlParams = new URLSearchParams(window.location.search);
-        const urlChatId = urlParams.get('chatId');
-        if (urlChatId) {
-            inputCliente.value = urlChatId;
+        function obterChatId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('chatId') || 'Geral';
         }
 
-        // Função executada ao clicar no QUADRADO (Tem Direito)
-        // Se clicar de novo, volta para o estado inicial (limpo)
         function alternarDireito(idItem) {
             const el = document.getElementById(idItem);
             if (el.classList.contains('tem-direito')) {
@@ -224,8 +209,6 @@
             }
         }
 
-        // Função executada ao clicar no TEXTO/NOME (Não Tem Direito)
-        // Se clicar de novo, volta para o estado inicial (limpo)
         function alternarNaoDireito(idItem) {
             const el = document.getElementById(idItem);
             if (el.classList.contains('nao-tem-direito')) {
@@ -238,7 +221,6 @@
             }
         }
 
-        // Salva a decisão na memória do navegador vinculada ao cliente atual
         function salvarEstado(idItem, status) {
             const clienteAtual = inputCliente.value.trim() || 'Geral';
             const storageKey = `${clienteAtual}-${idItem}`;
@@ -249,7 +231,6 @@
             }
         }
 
-        // Carrega as marcações corretas com base no nome do cliente atual
         function carregarChecklist() {
             const clienteAtual = inputCliente.value.trim() || 'Geral';
             items.forEach(item => {
@@ -265,10 +246,8 @@
             });
         }
 
-        // Monitora se o atendente alterar manualmente o identificador do cliente
         inputCliente.addEventListener('input', carregarChecklist);
 
-        // Limpa todas as seleções do cliente atual
         function limparChecklist() {
             const clienteAtual = inputCliente.value.trim() || 'Geral';
             items.forEach(item => {
@@ -278,7 +257,8 @@
             });
         }
 
-        // Inicia carregando as informações ao abrir a aba
+        // Garante a inicialização correta
+        inputCliente.value = obterChatId();
         carregarChecklist();
     </script>
 
